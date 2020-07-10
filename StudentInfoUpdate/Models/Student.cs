@@ -60,14 +60,14 @@ namespace StudentInfoUpdate.Models
         public bool Completed { get; set; }
 
 
-        
+        public string ImageUri { get; set; }
+        public string ThumbnailUri { get; set; }
+        public string Caption { get; set; }
 
-        [DisplayName("Image Upload")]
-        [Required(ErrorMessage = "Please select file.")]
-        public HttpPostedFileBase FileUpload { get; set; }
-        
 
-        
+        [JsonProperty(PropertyName = "Blob Uri")]
+        public string URI { get; set; }
+
 
     }
 }

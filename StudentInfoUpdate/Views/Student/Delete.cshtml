@@ -6,10 +6,14 @@
 }
 
 <h2>Delete</h2>
-
-<h3>Are you sure you want to delete this?</h3>
+<br />
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/Student/Index">Home</a></li>
+    <li class="breadcrumb-item active">Delete</li>
+</ol>
+<b><h3>Are you sure you want to delete this?</h3></b>
 <div>
-    <h4>Student</h4>
+    @*<h4>Student</h4>*@
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -61,20 +65,21 @@
         </dd>
 
         @*<dt>
-            @Html.DisplayNameFor(model => model.Completed)
-        </dt>
+                @Html.DisplayNameFor(model => model.Completed)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Completed)
-        </dd>*@
+            <dd>
+                @Html.DisplayFor(model => model.Completed)
+            </dd>*@
 
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <input type="submit" class="btn btn-danger" value="Delete" /> |
             @Html.ActionLink("Back to List", "Index")
         </div>
     }

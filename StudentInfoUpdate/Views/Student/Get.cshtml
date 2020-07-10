@@ -1,0 +1,53 @@
+﻿@model List<string>
+  
+@*@{
+    Layout = null;
+}*@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Get Image</title>
+</head>
+<body>
+    <div>
+        <h2>Student Photo</h2>
+
+        <br />
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Student/Index">Home</a></li>
+            <li class="breadcrumb-item active">Images</li>
+        </ol>
+        <br />
+
+        <h5>  <a href="@Url.Action("Index", "news")" @*style="color:green; font-size:14pt;"*@>Add New Photo</a></h5>
+    </div>
+    <div>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Picture</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (string SingleObj in Model)
+                {
+                    <tr>
+                        <td>
+                             
+                            <img src="@SingleObj" alt="@SingleObj", new { id = item.Id }
+                                 style="height:100px; width: auto;" />
+                        </td>
+                        <td>
+                            <span>@Html.ActionLink("Delete Picture", "Delete", "Student", new { uri = SingleObj }, new { })</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

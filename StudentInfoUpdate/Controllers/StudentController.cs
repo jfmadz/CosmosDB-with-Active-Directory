@@ -6,24 +6,28 @@ using System.Web.Mvc;
 using System.Net;
 using System.Threading.Tasks;
 using StudentInfoUpdate.Models;
+//using PagedList;
+//using PagedList.Mvc;
 
 namespace StudentInfoUpdate.Controllers
 {
-    
+
+    [System.Web.Mvc.Authorize]
+
     public class StudentController : Controller
     {
         [ActionName("Index")]
-        public async Task<ActionResult> IndexAsync(string searchString)
+        public async Task<ActionResult> IndexAsync(string searchString/*,int? page*/)
         {  
             var items = await DocumentDBRepository<Student>.GetItemsAsync(d => !d.Completed);
             if ((!string.IsNullOrEmpty(searchString)))
             {
                 items = items.Where(s => s.Name.Contains(searchString) || s.Surname.Contains(searchString) || s.Student_No.Contains(searchString));
             }
-            {
-                var blob = new StudentInfoUpdate.Blob();
-            }
-            return View(items.ToList());
+            //{
+            //    var blob = new StudentInfoUpdate.Blob();
+            //}
+            return View(items.ToList()/*.ToPagedList(page??1,3)*/);
         }
 
         [ActionName("Create")]
@@ -35,25 +39,41 @@ namespace StudentInfoUpdate.Controllers
         [HttpPost]
         [ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateAsync([Bind(Include = "Id,Student_No,Name,Surname,Email,Address,Mobile_No,Completed,FileUpload,URI")]Student item, Student photo)
+        public async Task<ActionResult> CreateAsync([Bind(Include = "Id,Student_No,Name,Surname,Email,Address,Mobile_No,Completed,ImageURri,ThumbnailUri,Caption")]Student item, HttpPostedFileBase uploadFile)
         {
             if (ModelState.IsValid)
             {
-                if (photo.FileUpload != null && photo.FileUpload.ContentLength > 0)
+                foreach (string file in Request.Files)
                 {
-                    var blob = new StudentInfoUpdate.Blob();
-                blob.UploadPhotoAsync("images", photo.FileUpload);
-            }
+                    uploadFile = Request.Files[file];
+                }
+                // Container Name - picture
+                BlobManager BlobManagerObj = new BlobManager("picture");
+                string FileAbsoluteUri = BlobManagerObj.UploadFile(uploadFile);
 
-            {
+               
+
+
+                {
                     await DocumentDBRepository<Student>.CreateItemAsync(item);
                     return RedirectToAction("Index");
                 }
-                
             }
+                
+            
                  return View(item);
             
         }
+
+        public ActionResult Get()
+        {
+            // Container Name - picture
+            BlobManager BlobManagerObj = new BlobManager("picture");
+            List<string> fileList = BlobManagerObj.BlobList();
+
+            return View(fileList);
+        }
+
 
 
         [HttpPost]
@@ -111,8 +131,12 @@ namespace StudentInfoUpdate.Controllers
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmedAsync([Bind(Include = "Id,Student_No,Name,Surname,Email,Address,Mobile_No,Completed")] string id, string category)
+        public async Task<ActionResult> DeleteConfirmedAsync([Bind(Include = "Id,Student_No,Name,Surname,Email,Address,Mobile_No,Completed")] string id, string category, string uri)
         {
+            // Container Name - picture
+            BlobManager BlobManagerObj = new BlobManager("picture");
+            BlobManagerObj.DeleteBlob(uri);
+
             await DocumentDBRepository<Student>.DeleteItemAsync(id, category);
             return RedirectToAction("Index");
         }

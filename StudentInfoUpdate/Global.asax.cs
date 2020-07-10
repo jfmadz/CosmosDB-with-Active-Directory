@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Claims;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -18,7 +20,7 @@ namespace StudentInfoUpdate
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             DocumentDBRepository<StudentInfoUpdate.Models.Student>.Initialize();
-
+            AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
         }
     }
 }
